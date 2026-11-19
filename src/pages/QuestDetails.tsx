@@ -2,16 +2,18 @@ import { useEffect, useState, useContext } from "react";
 import type { Context } from "../interfaces/context";
 import { ContextData } from "../context/Context";
 import Navbar from "../components/Navbar";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams,useNavigate } from "react-router-dom";
 import Error from "./Error"
+import QuestModal from "../components/QuestModal"
 
 export default function QuestDetail() {
-  
+  const navigate = useNavigate();
   const context = useContext<Context>(ContextData);
   const userData = context.user;
   const questData = context.mission;
   const { id } = useParams();
   const actualMission = questData.data.find((quest) => quest.id === id);
+  const [open, setOpen] = useState(false);
 
   if (!actualMission) return <Error />;
 
@@ -20,6 +22,7 @@ export default function QuestDetail() {
       alert("This quest has already been completed.");
       return;
     }
+    
 
     userData.setUser({
       ...userData.data,
@@ -36,6 +39,25 @@ export default function QuestDetail() {
 
   }
 
+  function deleteQuest() {
+    if(actualMission?.status === "completed") {
+      alert("You cannot delete a completed quest.");
+      return;
+    }
+    alert(`Quest "${actualMission?.title}" has been deleted.`);
+    questData.setMission(questData.data.filter((quest)=> quest.id !== actualMission?.id));
+    navigate("/quests");
+  }
+
+  function editQuest() {
+    if(actualMission?.status === "completed") {
+      alert("You cannot edit a completed quest.");
+      return;
+    }
+
+    setOpen(true);
+  }
+
   useEffect(()=>{
     if (userData.data.xp >= userData.data.nextLevelXP) {
       userData.setUser({
@@ -43,6 +65,7 @@ export default function QuestDetail() {
         level: userData.data.level + 1,
         nextLevelXP: userData.data.nextLevelXP + 100
       });
+      alert(`You level up to: ${userData.data.level + 1}!`);
     }
   },[userData])
 
@@ -53,6 +76,8 @@ export default function QuestDetail() {
         <Navbar />
 
         <main className="min-w-0 flex-1">
+
+          {open && <QuestModal setOpen={setOpen} isEditing={true} editQuest={actualMission} />}
           {/* MAIN CONTENT */}
           <div className="mx-auto max-w-6xl space-y-7 p-5 md:p-8">
             {/* BREADCRUMB / BACK NAVIGATION */}
@@ -267,6 +292,7 @@ export default function QuestDetail() {
                   <div className="mt-5 space-y-3">
                     {/* EDIT QUEST */}
                     <button
+                      onClick={editQuest}
                       type="button"
                       className="flex w-full items-center justify-center gap-2 rounded-xl border border-violet-400/30 bg-violet-500/10 px-4 py-3 text-sm font-semibold text-violet-200 transition hover:bg-violet-500/20"
                     >
@@ -276,6 +302,7 @@ export default function QuestDetail() {
                     {/* DELETE QUEST */}
                     <button
                       type="button"
+                      onClick={deleteQuest}
                       className="flex w-full items-center justify-center gap-2 rounded-xl border border-rose-400/20 bg-rose-500/5 px-4 py-3 text-sm font-semibold text-rose-300 transition hover:bg-rose-500/10"
                     >
                       🗑 Delete Quest

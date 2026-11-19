@@ -259,7 +259,7 @@ export default function Quests() {
 
                 {missions.length === 0 && (
                   <div className="col-span-full rounded-2xl border border-white/10 bg-linear-to-br from-slate-900 to-[#111225] p-5 text-center text-sm text-slate-400">
-                    No quests found matching the filters.
+                    No quests found.
                   </div>
                 )}
 

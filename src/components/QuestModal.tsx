@@ -8,9 +8,10 @@ import type { Context } from "../interfaces/context";
 import { ContextData } from "../context/Context";
 import type {MissionContextType} from "../interfaces/missions"
 import {QUEST_REWARDS} from "../constants/questRewards"
+import type {Mission} from "../interfaces/missions"
 
 
-export default function QuestModal({setOpen}:{setOpen: Function}) {
+export default function QuestModal({setOpen,isEditing=false,editQuest}:{setOpen: Function, isEditing?: boolean, editQuest?: Mission}) {
     const context: Context = useContext<Context>(ContextData);
     const questsData : MissionContextType = context.mission;
     const {
@@ -25,19 +26,41 @@ export default function QuestModal({setOpen}:{setOpen: Function}) {
 
 
     const onSubmit:  SubmitHandler<QuestFormFields> = (data) => {
-      questsData.setMission([...questsData.data, {
-        ...data,
-        id: `quest-${questsData.data.length + 1}`,
-        status: "pending",
-        deadline: data.deadline === "" ? null : data.deadline,
+      if(isEditing)
+      {
+        questsData.setMission(questsData.data.map((quest)=>{
+          if(quest.id === editQuest?.id)
+          {
+            return { 
+              ...quest, 
+              ...data,
+              status : "pending",
+              deadline: data.deadline === "" ? null : data.deadline,
+              rewards: {
+                xp: QUEST_REWARDS[data.difficulty].xp,
+                coins: QUEST_REWARDS[data.difficulty].coins,
+              },
+            };
+          }
+          return quest;
+        }))
+      }
+      else
+      {
+        questsData.setMission([...questsData.data, {
+          ...data,
+          id: `quest-${questsData.data.length + 1}`,
+          status: "pending",
+          deadline: data.deadline === "" ? null : data.deadline,
         rewards: {
           xp: QUEST_REWARDS[data.difficulty].xp,
           coins: QUEST_REWARDS[data.difficulty].coins,
         },
       }]);
-      reset();
-      setOpen(false);
     }
+    reset();
+    setOpen(false);
+  }
 
     const onError = (errors: any) => {
       console.log("Errores de validación:", errors);
@@ -110,6 +133,7 @@ export default function QuestModal({setOpen}:{setOpen: Function}) {
               /* required */
               /* minLength={3}
               maxLength={60} */
+              defaultValue={editQuest?.title || ""}
               placeholder="Ej. Explore the Whispering Forest"
               className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-600 focus:border-violet-400 focus:ring-2 focus:ring-violet-500/10"
             />
@@ -141,6 +165,7 @@ export default function QuestModal({setOpen}:{setOpen: Function}) {
               /* required */
               /* minLength={10}
               maxLength={300} */
+              defaultValue={editQuest?.description || ""}
               rows={4}
               placeholder="Describe the objective, the challenge, and what the adventurer must achieve..."
               className="w-full resize-y rounded-xl border border-white/10 bg-slate-950/70 px-4 py-3 text-sm leading-6 text-white outline-none transition placeholder:text-slate-600 focus:border-violet-400 focus:ring-2 focus:ring-violet-500/10"
@@ -172,8 +197,8 @@ export default function QuestModal({setOpen}:{setOpen: Function}) {
               <select
                 {...register("category")}
                 id="quest-category"
+                defaultValue={editQuest?.category || "study"}
                 name="category"
-                defaultValue="adventure"
                 className="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-3 text-sm text-slate-200 outline-none focus:border-violet-400"
               >
                 <option value="study">📚 Study</option>
@@ -195,8 +220,8 @@ export default function QuestModal({setOpen}:{setOpen: Function}) {
               <select
                 {...register("difficulty")}
                 id="quest-difficulty"
+                defaultValue={editQuest?.difficulty || "easy"}
                 name="difficulty"
-                defaultValue="easy"
                 className="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-3 text-sm text-slate-200 outline-none focus:border-violet-400"
               >
                 <option value="easy">Easy</option>
@@ -222,6 +247,7 @@ export default function QuestModal({setOpen}:{setOpen: Function}) {
             <input
               {...register("deadline")}
               id="quest-deadline"
+              defaultValue={editQuest?.deadline || ""}
               name="deadline"
               type="date"
               className="w-full rounded-xl border border-white/10 bg-slate-950 px-4 py-3 text-sm text-slate-300 outline-none transition focus:border-violet-400"

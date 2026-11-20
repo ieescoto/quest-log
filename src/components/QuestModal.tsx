@@ -1,5 +1,5 @@
-import {QuestSchema} from '../interfaces/questForm'
-import type {QuestFormFields} from '../interfaces/questForm'
+import {QuestSchema} from '../schemas/questForm'
+import type {QuestFormFields} from '../schemas/questForm'
 import { useForm } from "react-hook-form"
 import type { SubmitHandler} from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"

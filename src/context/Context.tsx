@@ -7,6 +7,7 @@ export const ContextData = createContext<Context>({
   user:{
     data: {
       username : "User",
+      avatar: "🧙",
       level : 1, 
       xp : 0,  
       coins : 0, 
@@ -23,6 +24,7 @@ export const ContextData = createContext<Context>({
 export function AppContext({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User>({
     username : "Roy",
+    avatar: "🧙",
     level : 1, 
     xp : 0,  
     coins : 0, 

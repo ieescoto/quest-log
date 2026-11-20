@@ -9,16 +9,16 @@ export function ProgressBar({design} : {design : string}) {
     
     useEffect(()=>{
         if(xp>0){
-            const newProgress = progressBar + 25
-            setProgressBar(newProgress);
+            let newProgress = 100-(nextLevelXP-xp)
             if(xp>=nextLevelXP){
-                setProgressBar(0)
+                newProgress = xp-nextLevelXP;
             }
+            setProgressBar(newProgress);
         }
     }, [xp])
     return (
         <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-700">
-            <div className={design} style={{width: `${progressBar}%`}} /> 
+            <div className={`h-full rounded-full transition-all duration-300 ${design}`} style={{width: `${progressBar}%`}} /> 
             {/*El w- es lo que modifica la barra, w-41(40.6) es la barra llena */}
         </div>
     )

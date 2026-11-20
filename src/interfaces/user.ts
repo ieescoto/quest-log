@@ -1,5 +1,8 @@
+type avatar = "🧙" | "🛡️" | "🏹" | "🧝" | "🐉";
+
 export interface User {
     username: string,
+    avatar : avatar,
     level : number,
     xp : number,
     nextLevelXP : number,

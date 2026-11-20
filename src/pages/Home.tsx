@@ -70,12 +70,12 @@ export default function Home() {
 
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full border border-violet-300/60 bg-violet-600/30 text-xl">
-                  👤
+                  {userData.data.avatar}
                 </div>
 
                 <div className="hidden sm:block">
                   <p className="text-sm font-semibold text-white">
-                    Adventurer
+                    {userData.data.username}
                   </p>
                   <p className="text-xs text-slate-400">Level {userData.data.level}</p>
                 </div>
@@ -161,7 +161,7 @@ export default function Home() {
 
                   <p className="mt-3 text-3xl font-black">{userData.data.level}</p>
 
-                  <ProgressBar design="h-full rounded-full bg-amber-300" />
+                  <ProgressBar design=" bg-amber-300" />
 
                   <p className="mt-2 text-right text-xs text-slate-400">
                     {userData.data.xp} / {userData.data.nextLevelXP} XP
@@ -327,7 +327,7 @@ export default function Home() {
 
                     {/* AVATAR DECORATIVO: después puedes permitir que el usuario lo cambie */}
                     <div className="flex h-28 w-28 shrink-0 items-center justify-center rounded-full border-4 border-amber-300/70 bg-violet-600/20 text-6xl shadow-lg shadow-violet-950/40">
-                      🧙
+                      {userData.data.avatar}
                     </div>
 
                     {/* INFORMACIÓN DE NIVEL Y PROGRESO */}
@@ -343,7 +343,7 @@ export default function Home() {
                         <div className="h-full w-0 rounded-full bg-linear-to-r from-violet-500 to-fuchsia-400" />
                       </div> */}
 
-                      <ProgressBar design="h-full rounded-full bg-linear-to-r from-violet-500 to-fuchsia-400" />
+                      <ProgressBar design="bg-linear-to-r from-violet-500 to-fuchsia-400" />
 
                       <p className="mt-2 text-right text-xs text-slate-400">
                         {userData.data.xp} / {userData.data.nextLevelXP} XP

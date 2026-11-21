@@ -157,7 +157,7 @@ Make sure you have installed:
 
 1. **Clone the repository:**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/ieescoto/quest-log
    cd questlog
    ```
 
@@ -206,7 +206,7 @@ The core quest management, player progression, and profile features are fully im
 
 ## Author
 
-**Tu Nombre**  
+**Isaac Escoto**  
 Designed and built as a full-stack productivity application focused on type-safe architecture, relational data integrity, and gamified user engagement.
 
 ---

@@ -8,7 +8,7 @@ The project combines task management with RPG progression mechanics to make prod
 
 ## Live Demo
 
-**[View Live Application](https://vercel.app)**  
+**[View Live Application](https://quest-log-liard.vercel.app/)**  
 *(No login required — an anonymous adventurer profile is automatically generated on your first visit).*
 
 ---
@@ -16,7 +16,7 @@ The project combines task management with RPG progression mechanics to make prod
 ## Features
 
 ### Quest Management
-- Create, edit, and delete quests.
+- Create, edit, and delete quests with instant toast feedback.
 - Search quests by title and filter by status, category, and difficulty.
 - Track quest status (`pending` or `completed`).
 - Set optional deadlines.
@@ -25,7 +25,7 @@ The project combines task management with RPG progression mechanics to make prod
 ### RPG Progression System
 - Earn experience points (XP) by completing quests.
 - Earn coins as quest rewards.
-- Level up as experience points accumulate.
+- Level up as experience points accumulate with real-time level-up notifications.
 - Track current level and progress toward the next level.
 - Prevent completed quests from rewarding XP and coins more than once.
 
@@ -56,7 +56,7 @@ This system will encourage players to collect characters and choose the one that
 
 ## Architecture & Engineering Decisions
 
-- **Zero-Friction Onboarding:** On first visit, the application creates a player profile using a PostgreSQL-generated `UUID`, stores the profile ID in `localStorage`, and seeds 5 starter quests. This eliminates registration friction while allowing the application to recognize the same anonymous player across visits on the same browser.
+- **Zero-Friction Onboarding:** On first visit, users are prompted to enter their adventurer name before a player profile is created. The application generates a PostgreSQL UUID, stores the profile ID in `localStorage`, and seeds 5 starter quests. This eliminates registration friction while allowing the application to recognize the same anonymous player across visits on the same browser.
 - **Single Source of Truth:** Player levels and next-level XP thresholds are deterministically derived on the client from accumulated `xp`, preventing redundant columns and state desynchronization in the database.
 - **Database-Level Validation:** Form validation rules defined with **Zod** and **React Hook Form** are reinforced by PostgreSQL `CHECK` constraints, providing an additional layer of data integrity.
 
@@ -74,6 +74,7 @@ This system will encourage players to collect characters and choose the one that
 | PostgreSQL | Relational database |
 | React Hook Form | Form management |
 | Zod | Form validation |
+| Sonner | Toast notifications and user feedback |
 
 ---
 
@@ -212,3 +213,4 @@ Designed and built as a full-stack productivity application focused on type-safe
 ---
 
 **QuestLog — Every task is a new adventure.**
+

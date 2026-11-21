@@ -1,147 +1,49 @@
 {
-    "missions": [
-        {
-            "id": "quest-001",
-            "title": "Explora el Bosque Susurrante",
-            "description": "Adéntrate en el bosque antiguo y descubre sus secretos.",
-            "category": "exploration",
-            "difficulty": "easy",
-            "status": "completed",
-            "deadline": null,
-            "rewards": {
-                "xp": 20,
-                "coins": 10
-            }
-        },
-        {
-            "id": "quest-002",
-            "title": "Reúne hierbas medicinales",
-            "description": "Busca plantas curativas en los alrededores de la aldea.",
-            "category": "exploration",
-            "difficulty": "easy",
-            "status": "pending",
-            "deadline": null,
-            "rewards": {
-                "xp": 20,
-                "coins": 10
-            }
-        },
-        {
-            "id": "quest-003",
-            "title": "Ayuda al herrero",
-            "description": "Entrega mineral de hierro al herrero para reparar su forja.",
-            "category": "adventure",
-            "difficulty": "easy",
-            "status": "pending",
-            "deadline": null,
-            "rewards": {
-                "xp": 20,
-                "coins": 10
-            }
-        },
-        {
-            "id": "quest-004",
-            "title": "Limpia el camino del norte",
-            "description": "Ahuyenta a los lobos que bloquean la ruta comercial.",
-            "category": "combat",
-            "difficulty": "medium",
-            "status": "pending",
-            "deadline": null,
-            "rewards": {
-                "xp": 50,
-                "coins": 25
-            }
-        },
-        {
-            "id": "quest-005",
-            "title": "Recupera el mapa perdido",
-            "description": "Encuentra el mapa del explorador cerca de las ruinas antiguas.",
-            "category": "exploration",
-            "difficulty": "medium",
-            "status": "pending",
-            "deadline": null,
-            "rewards": {
-                "xp": 50,
-                "coins": 25
-            }
-        },
-        {
-            "id": "quest-006",
-            "title": "Entrega de provisiones",
-            "description": "Lleva comida y agua al puesto de guardia de la frontera.",
-            "category": "adventure",
-            "difficulty": "easy",
-            "status": "pending",
-            "deadline": null,
-            "rewards": {
-                "xp": 20,
-                "coins": 10
-            }
-        },
-        {
-            "id": "quest-007",
-            "title": "Ecos en las ruinas",
-            "description": "Investiga las luces misteriosas que aparecen al anochecer.",
-            "category": "exploration",
-            "difficulty": "hard",
-            "status": "pending",
-            "deadline": null,
-            "rewards": {
-                "xp": 100,
-                "coins": 50
-            }
-        },
-        {
-            "id": "quest-008",
-            "title": "Cosecha de setas",
-            "description": "Recolecta setas comestibles para la cocina de la posada.",
-            "category": "exploration",
-            "difficulty": "easy",
-            "status": "pending",
-            "deadline": null,
-            "rewards": {
-                "xp": 20,
-                "coins": 10
-            }
-        },
-        {
-            "id": "quest-009",
-            "title": "El desafío del guardián",
-            "description": "Derrota al guardián de piedra y demuestra tu valor.",
-            "category": "combat",
-            "difficulty": "hard",
-            "status": "pending",
-            "deadline": null,
-            "rewards": {
-                "xp": 100,
-                "coins": 50
-            }
-        },
-        {
-            "id": "quest-010",
-            "title": "Una carta para la capitana",
-            "description": "Entrega una carta sellada a la capitana de la guardia.",
-            "category": "adventure",
-            "difficulty": "medium",
-            "status": "pending",
-            "deadline": null,
-            "rewards": {
-                "xp": 50,
-                "coins": 25
-            }
-        },
-        {
-            "id": "quest-011",
-            "title": "Derrota al Dragon de Fuego",
-            "description": "Viaja a la cima de la torre y derrota al imponente dragon de fuego.",
-            "category": "combat",
-            "difficulty": "epic",
-            "status": "pending",
-            "deadline": null,
-            "rewards": {
-                "xp": 200,
-                "coins": 100
-            }
-        }
-    ]
+  "missions": [
+    {
+      "id": "quest-1",
+      "title": "Customize Your Adventurer Profile",
+      "description": "Visit your profile page, choose a new RPG avatar, and set your custom adventurer name.",
+      "category": "adventure",
+      "difficulty": "easy",
+      "status": "pending",
+      "deadline": null
+    },
+    {
+      "id": "quest-2",
+      "title": "Chart the Unexplored Territory",
+      "description": "Explore the quest board and test the category and difficulty filters to organize your missions.",
+      "category": "exploration",
+      "difficulty": "easy",
+      "status": "pending",
+      "deadline": null
+    },
+    {
+      "id": "quest-3",
+      "title": "Decipher the Ancient Scrolls",
+      "description": "Complete a focused one-hour study session on a new programming concept or technical documentation.",
+      "category": "study",
+      "difficulty": "medium",
+      "status": "pending",
+      "deadline": null
+    },
+    {
+      "id": "quest-4",
+      "title": "Defend the Northern Outpost",
+      "description": "Tackle your most challenging daily task without distractions until all objectives are cleared.",
+      "category": "combat",
+      "difficulty": "hard",
+      "status": "pending",
+      "deadline": null
+    },
+    {
+      "id": "quest-5",
+      "title": "Slay the Fire Dragon of Mount Ash",
+      "description": "Journey to the summit of the obsidian tower and defeat the mighty fire dragon to claim legendary loot.",
+      "category": "combat",
+      "difficulty": "epic",
+      "status": "pending",
+      "deadline": null
+    }
+  ]
 }

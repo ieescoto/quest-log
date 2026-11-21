@@ -1,6 +1,7 @@
-type avatar = "🧙" | "🛡️" | "🏹" | "🧝" | "🐉";
+type avatar = "🧙" | "🛡️" | "🏹" | "🧝" | "🐉" | "⚔️"| "🧙‍♀️";
 
 export interface User {
+    id: string,
     username: string,
     avatar : avatar,
     level : number,
@@ -9,9 +10,17 @@ export interface User {
     coins : number
 }
 
+export interface DBUser {
+    id: string,
+    username: string,
+    avatar : avatar,
+    xp : number,
+    coins : number
+}
+
 export interface UserContextType {
   data: User;
-  setUser: React.Dispatch<React.SetStateAction<User>>;
+  setUser: Function;
 }
 
 

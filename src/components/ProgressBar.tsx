@@ -2,7 +2,11 @@ import {useState, useContext, useEffect } from "react";
 import { ContextData } from "../context/Context";
 import type { Context } from "../interfaces/context";
 
-export function ProgressBar({design} : {design : string}) {
+interface ProgressBarProps {
+    design : string
+}
+
+export function ProgressBar({design} : ProgressBarProps) {
     {/* Barra de experiencia: el ancho es solo ilustrativo */}
     const {xp,nextLevelXP} = useContext<Context>(ContextData).user.data;
     const [progressBar, setProgressBar] = useState(0);

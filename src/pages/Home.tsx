@@ -6,30 +6,12 @@ import type {MissionContextType} from "../interfaces/missions";
 import type {Context} from "../interfaces/context";
 import { ContextData } from "../context/Context";
 import { Link } from "react-router-dom";
+import {RecentQuestCard} from "../components/RecentQuestCard"
 
 export default function Home() {
   const context: Context = useContext<Context>(ContextData);
   const userData: UserContextType = context.user
-  //const missions: MissionContextType = context.mission 
-  
-  //Modificar valores de monedas y experiencia correctamente
-  function handleLevelUp() {
-    userData.setUser({
-      ...userData.data,
-      xp: userData.data.xp + 25,
-      coins: userData.data.coins + 5
-    });
-  }
-  
-  useEffect(()=>{
-    if (userData.data.xp >= userData.data.nextLevelXP) {
-      userData.setUser({
-        ...userData.data,
-        level: userData.data.level + 1,
-        nextLevelXP: userData.data.nextLevelXP + 100
-      });
-    }
-  },[userData])
+  const missions: MissionContextType = context.mission 
 
   return (
     /* CONTENEDOR GENERAL: menú lateral + contenido de la página */
@@ -63,21 +45,20 @@ export default function Home() {
                 type="button"
                 aria-label="Notificaciones"
                 className="rounded-full p-2 text-xl text-slate-300 transition hover:bg-white/10"
-                onClick={handleLevelUp}
               >
                 ♧
               </button>
 
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full border border-violet-300/60 bg-violet-600/30 text-xl">
-                  {userData.data.avatar}
+                  {userData.data?.avatar}
                 </div>
 
                 <div className="hidden sm:block">
                   <p className="text-sm font-semibold text-white">
-                    {userData.data.username}
+                    {userData.data?.username}
                   </p>
-                  <p className="text-xs text-slate-400">Level {userData.data.level}</p>
+                  <p className="text-xs text-slate-400">Level {userData.data?.level}</p>
                 </div>
 
                 <span className="text-slate-500">⌄</span>
@@ -105,7 +86,7 @@ export default function Home() {
 
                   <h2 className="text-3xl font-black leading-tight tracking-tight md:text-5xl">
                     Welcome,
-                    <span className="text-amber-300"> {userData.data.username}!</span>
+                    <span className="text-amber-300"> {userData.data?.username}!</span>
                   </h2>
 
                   <p className="mt-4 max-w-xl text-sm leading-7 text-slate-300 md:text-base">
@@ -159,12 +140,12 @@ export default function Home() {
                     <span className="text-3xl">⭐</span>
                   </div>
 
-                  <p className="mt-3 text-3xl font-black">{userData.data.level}</p>
+                  <p className="mt-3 text-3xl font-black">{userData.data?.level}</p>
 
                   <ProgressBar design=" bg-amber-300" />
 
                   <p className="mt-2 text-right text-xs text-slate-400">
-                    {userData.data.xp} / {userData.data.nextLevelXP} XP
+                    {userData.data?.xp} / {userData.data?.nextLevelXP} XP
                   </p>
                 </article>
 
@@ -175,7 +156,7 @@ export default function Home() {
                     <span className="text-3xl">💎</span>
                   </div>
 
-                  <p className="mt-3 text-3xl font-black">{userData.data.coins}</p>
+                  <p className="mt-3 text-3xl font-black">{userData.data?.coins}</p>
 
                   <p className="mt-3 text-xs text-slate-500">
                     Your accumulated treasure
@@ -190,7 +171,7 @@ export default function Home() {
                   </div>
 
                   <p className="mt-3 text-3xl font-black">
-                    {context.mission.data.filter(({status})=>status=="pending").length}
+                    {missions.data.filter(({status})=>status=="pending").length}
                   </p>
 
                   <p className="mt-3 text-xs text-slate-500">
@@ -207,7 +188,7 @@ export default function Home() {
                     <span className="text-3xl">✅</span>
                   </div>
 
-                  <p className="mt-3 text-3xl font-black">{context.mission.data.filter(({status})=>status=="completed").length}</p>
+                  <p className="mt-3 text-3xl font-black">{missions.data.filter(({status})=>status=="completed").length}</p>
 
                   <p className="mt-3 text-xs text-slate-500">
                     Your completed adventures
@@ -231,83 +212,15 @@ export default function Home() {
                   </h2>
 
                   {/* Enlace visual a la lista completa */}
-                  <a
-                    href="#"
+                  <Link
+                    to="/quests"
                     className="text-sm font-semibold text-violet-300 transition hover:text-violet-200"
                   >
                     See all →
-                  </a>
+                  </Link>
                 </div>
 
-                {/* MISIÓN DE EJEMPLO 1 */}
-                <article className="m-3 flex flex-wrap items-center gap-4 rounded-xl border border-white/5 bg-slate-900/70 p-4 transition hover:border-violet-400/30">
-                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border border-emerald-300/20 bg-linear-to-br from-emerald-900 to-slate-800 text-3xl">
-                    🌲
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-bold text-white">
-                      Explore the Whispering Forest
-                    </h3>
-
-                    <p className="mt-1 text-sm text-slate-400">
-                      Discover the secrets of the forest.
-                    </p>
-                  </div>
-
-                  <span className="rounded-full bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-300">
-                    Easy
-                  </span>
-
-                  {/* Indicador visual: tú añadirás la navegación al detalle */}
-                  <span className="text-xl text-slate-500">›</span>
-                </article>
-
-                {/* MISIÓN DE EJEMPLO 2 */}
-                <article className="m-3 flex flex-wrap items-center gap-4 rounded-xl border border-white/5 bg-slate-900/70 p-4 transition hover:border-violet-400/30">
-                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border border-amber-300/20 bg-linear-to-br from-amber-950 to-slate-800 text-3xl">
-                    🔮
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-bold text-white">
-                      Find the Lost Crystal
-                    </h3>
-
-                    <p className="mt-1 text-sm text-slate-400">
-                      Search for the crystal in the forgotten cave.
-                    </p>
-                  </div>
-
-                  <span className="rounded-full bg-amber-400/10 px-3 py-1 text-xs font-semibold text-amber-300">
-                    Normal
-                  </span>
-
-                  <span className="text-xl text-slate-500">›</span>
-                </article>
-
-                {/* MISIÓN DE EJEMPLO 3 */}
-                <article className="m-3 flex flex-wrap items-center gap-4 rounded-xl border border-white/5 bg-slate-900/70 p-4 transition hover:border-violet-400/30">
-                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border border-rose-300/20 bg-linear-to-br from-rose-950 to-slate-800 text-3xl">
-                    🐉
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-bold text-white">
-                      Defeat the Dark Lord
-                    </h3>
-
-                    <p className="mt-1 text-sm text-slate-400">
-                      Face your most feared enemy.
-                    </p>
-                  </div>
-
-                  <span className="rounded-full bg-rose-400/10 px-3 py-1 text-xs font-semibold text-rose-300">
-                    Hard
-                  </span>
-
-                  <span className="text-xl text-slate-500">›</span>
-                </article>
+                {missions.data.slice(-3).map(({id})=> <RecentQuestCard questID={id} />)}
               </div>
 
               {/* COLUMNA DERECHA: personaje y accesos rápidos */}
@@ -327,15 +240,15 @@ export default function Home() {
 
                     {/* AVATAR DECORATIVO: después puedes permitir que el usuario lo cambie */}
                     <div className="flex h-28 w-28 shrink-0 items-center justify-center rounded-full border-4 border-amber-300/70 bg-violet-600/20 text-6xl shadow-lg shadow-violet-950/40">
-                      {userData.data.avatar}
+                      {userData.data?.avatar}
                     </div>
 
                     {/* INFORMACIÓN DE NIVEL Y PROGRESO */}
                     <div className="w-full flex-1">
-                      <h3 className="text-xl font-bold">Adventurer</h3>
+                      <h3 className="text-xl font-bold">{userData.data.username}</h3>
 
                       <p className="mt-1 text-sm text-violet-300">
-                        Level {userData.data.level}
+                        Level {userData.data?.level}
                       </p>
 
                       {/* Barra de experiencia provisional */}
@@ -346,13 +259,13 @@ export default function Home() {
                       <ProgressBar design="bg-linear-to-r from-violet-500 to-fuchsia-400" />
 
                       <p className="mt-2 text-right text-xs text-slate-400">
-                        {userData.data.xp} / {userData.data.nextLevelXP} XP
+                        {userData.data?.xp} / {userData.data?.nextLevelXP} XP
                       </p>
 
-                      <div className="mt-4 flex flex-wrap gap-4 text-sm">
+                      {/* <div className="mt-4 flex flex-wrap gap-4 text-sm">
                         <span className="text-rose-300">♥ 100 / 100</span>
                         <span className="text-cyan-300">ϟ 50 / 50</span>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </article>

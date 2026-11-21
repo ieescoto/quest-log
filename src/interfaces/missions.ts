@@ -4,11 +4,6 @@ type difficulty = "easy" | "medium" | "hard" | "epic"
 
 type status = "completed" | "pending"
 
-interface Rewards {
-    xp: number,
-    coins: number
-}
-
 export interface Mission{
     id: string,
     title: string,
@@ -17,7 +12,6 @@ export interface Mission{
     difficulty: difficulty,
     status: status,
     deadline: string | null,
-    rewards: Rewards
 }
 
 export interface MissionContextType{

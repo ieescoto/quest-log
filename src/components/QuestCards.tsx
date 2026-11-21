@@ -2,49 +2,61 @@ import { useContext } from "react";
 import type { Context } from "../interfaces/context";
 import { ContextData } from "../context/Context";
 import { Link } from "react-router-dom";
+import {QUEST_REWARDS} from "../constants/questRewards"
 
-export function QuestCards({ currentMissionId }: { currentMissionId: string }) {
-  const data = useContext<Context>(ContextData).mission.data;
-  const actualMission = data.find(({ id }) => id === currentMissionId);
-  let borderHoverDesign = "";
-  let iconDesign = "";
-  let difficultyDesign = "";
-
-  if (actualMission != undefined) {
-    if (actualMission.difficulty == "easy") {
-      borderHoverDesign ="hover:border-emerald-400/40 hover:shadow-emerald-950/10";
-      iconDesign = "border-emerald-400/20 bg-emerald-500/10";
-      difficultyDesign ="border-emerald-400/20 bg-emerald-400/10 text-emerald-300";
-    } else if (actualMission.difficulty == "medium") {
-      borderHoverDesign = "hover:border-amber-400/40 hover:shadow-amber-950/10";
-      iconDesign = "border-amber-400/20 bg-amber-500/10";
-      difficultyDesign = "border-amber-400/20 bg-amber-400/10 text-amber-300";
-    } else if (actualMission.difficulty == "hard") {
-      borderHoverDesign = "hover:border-rose-400/40 hover:shadow-rose-950/10";
-      iconDesign = "border-rose-400/20 bg-rose-500/10";
-      difficultyDesign = "border-rose-400/20 bg-rose-400/10 text-rose-300";
-    } else {
-      borderHoverDesign = "hover:border-purple-400/40 hover:shadow-purple-950/10";
-      iconDesign = "border-purple-400/20 bg-purple-500/10";
-      difficultyDesign = "border-purple-400/20 bg-purple-400/10 text-purple-300";
+const DIFFICULTY_DESIGN = {
+  easy : {
+        borderHover : "hover:border-emerald-400/40 hover:shadow-emerald-950/10",
+        iconBGColor : "border-emerald-400/20 bg-emerald-500/10",
+        text : "border-emerald-400/20 bg-emerald-400/10 text-emerald-300",
+        icon : "🌱"
+    },
+    medium : {
+        borderHover : "hover:border-amber-400/40 hover:shadow-amber-950/10",
+        iconBGColor : "border-amber-400/20 bg-amber-500/10",
+        text : "border-amber-400/20 bg-amber-400/10 text-amber-300",
+        icon: "🌿"
+    },
+    hard : {
+        borderHover : "hover:border-rose-400/40 hover:shadow-rose-950/10",
+        iconBGColor : "border-rose-400/20 bg-rose-500/10",
+        text: "border-rose-400/20 bg-rose-400/10 text-rose-300",
+        icon: "🌋"
+    },
+    epic : {
+        borderHover : "hover:border-purple-400/40 hover:shadow-purple-950/10",
+        iconBGColor : "border-purple-400/20 bg-purple-500/10",
+        text : "border-purple-400/20 bg-purple-400/10 text-purple-300",
+        icon: "👑"
     }
-  } else {
+}
+
+interface QuestCardProps {
+  currentQuestID : string
+}
+
+export function QuestCards({ currentQuestID }: QuestCardProps) {
+  const data = useContext<Context>(ContextData).mission.data;
+  const actualMission = data.find(({ id }) => id === currentQuestID);
+
+
+  if(actualMission === undefined) {
     return <h1>No hay Mision</h1>;
   }
 
   return (
     <article
-      className={`group flex flex-col rounded-2xl border border-white/10 bg-linear-to-br from-slate-900 to-[#111225] p-5 transition hover:-translate-y-1 hover:shadow-xl ${borderHoverDesign}`}
+      className={`group flex flex-col rounded-2xl border border-white/10 bg-linear-to-br from-slate-900 to-[#111225] p-5 transition hover:-translate-y-1 hover:shadow-xl ${DIFFICULTY_DESIGN[actualMission.difficulty].borderHover}`}
     >
       <div className="mb-4 flex items-start justify-between gap-3">
         <div
-          className={`flex h-12 w-12 items-center justify-center rounded-xl border ${iconDesign} text-2xl`}
+          className={`flex h-12 w-12 items-center justify-center rounded-xl border ${DIFFICULTY_DESIGN[actualMission.difficulty].iconBGColor} text-2xl`}
         >
-          🐉
+          {DIFFICULTY_DESIGN[actualMission.difficulty].icon}
         </div>
 
         <span
-          className={`rounded-full border px-3 py-1 text-xs font-semibold ${difficultyDesign}`}
+          className={`rounded-full border px-3 py-1 text-xs font-semibold ${DIFFICULTY_DESIGN[actualMission.difficulty].text}`}
         >
           {actualMission.difficulty}
         </span>
@@ -71,8 +83,8 @@ export function QuestCards({ currentMissionId }: { currentMissionId: string }) {
 
       {/* RECOMPENSAS: según las reglas definidas para QuestLog */}
       <div className="mt-4 flex items-center gap-4 border-t border-white/10 pt-4 text-sm">
-        <span className="text-amber-300">✦ {actualMission.rewards.xp} XP</span>
-        <span className="text-violet-300">◆ {actualMission.rewards.coins} coins</span>
+        <span className="text-amber-300">✦ {QUEST_REWARDS[actualMission.difficulty].xp} XP</span>
+        <span className="text-violet-300">◆ {QUEST_REWARDS[actualMission.difficulty].coins} coins</span>
       </div>
 
       {/* ESTADO Y ESPACIO PARA TUS ACCIONES */}

@@ -2,72 +2,120 @@ import { useEffect, useState, useContext } from "react";
 import type { Context } from "../interfaces/context";
 import { ContextData } from "../context/Context";
 import Navbar from "../components/Navbar";
-import { Link, useParams,useNavigate } from "react-router-dom";
-import Error from "./Error"
-import QuestModal from "../components/QuestModal"
+import { Link, useParams, useNavigate } from "react-router-dom";
+import Error from "./Error";
+import QuestModal from "../components/QuestModal";
+import { supabase } from "../bd/supabase";
+import {QUEST_REWARDS} from "../constants/questRewards"
 
 export default function QuestDetail() {
   const navigate = useNavigate();
   const context = useContext<Context>(ContextData);
   const userData = context.user;
   const questData = context.mission;
+  const previousLevel = userData.data.level
   const { id } = useParams();
-  const actualMission = questData.data.find((quest) => quest.id === id);
+  const actualMission = questData.data.find((quest) => String(quest.id) === id);
   const [open, setOpen] = useState(false);
 
   if (!actualMission) return <Error />;
 
+  async function updateUserData(){
+      try {
+        const { data, error } = await supabase
+          .from("profiles")
+          .update({
+            xp: userData.data.xp + (actualMission!==undefined ? QUEST_REWARDS[actualMission.difficulty].xp : 0),
+            coins: userData.data.coins + (actualMission!==undefined ? QUEST_REWARDS[actualMission.difficulty].coins : 0),
+          })
+          .eq("id", userData.data.id)
+          .select()
+          .single();
+          
+          if (!error) {
+            userData.setUser(data);
+  
+            const newLevel = Math.floor(data.xp/100) + 1
+            if(newLevel > previousLevel){
+              alert(`You level up to: ${newLevel}!`);
+            }
+          }else{
+            console.error("Error when trying to complete a quest: ", error.message)
+          }
+      } catch (error) {
+        console.error("There was an unexpected error when updating the user: ", error);
+      }
+
+  }
+
+  async function updateQuestStatus(){
+    try{
+      const {data,error} = await supabase.from("quests").update({status: "completed"}).eq("id",id).select("id,title,description,category,difficulty,status,deadline").single()
+
+      if(!error){
+        questData.setMission(
+          questData.data.map((quest) => {
+            if (quest.id === data.id) {
+              return data;
+            }
+            return quest;
+          }),
+        );
+      }else{
+        console.error("Error trying to update quest status: ",error.message)
+      }
+
+    }catch(error){
+      console.error("Unexpected error when updating quest status: ", error)
+    }
+  }
+
   function completeQuest() {
-    if(actualMission?.status === "completed") {
+    if (actualMission?.status === "completed") {
       alert("This quest has already been completed.");
       return;
     }
-    
 
-    userData.setUser({
-      ...userData.data,
-      xp: userData.data.xp + (actualMission?.rewards.xp || 0),
-      coins: userData.data.coins + (actualMission?.rewards.coins || 0),
-    });
-
-    questData.setMission(questData.data.map((quest) => {
-      if (quest.id === actualMission?.id) {
-        return { ...quest, status: "completed" };
-      }
-      return quest;
-    }));
-
+    updateUserData();
+    updateQuestStatus();
   }
 
   function deleteQuest() {
-    if(actualMission?.status === "completed") {
+    const deleteQuest = async () => {
+      try{
+        const {data,error} = await supabase.from("quests").delete().eq("id",actualMission?.id).select("id").single()
+        
+        if(!error){
+          alert(`Quest "${actualMission?.title}" has been deleted.`);
+          questData.setMission(
+            questData.data.filter((quest) => quest.id !== data.id),
+          );
+          navigate("/quests");
+        }
+  
+      }catch(error){
+        console.error("Unexpected error when trying to delete the quest: ",error)
+      }
+    }
+
+    if (actualMission?.status === "completed") {
       alert("You cannot delete a completed quest.");
       return;
     }
-    alert(`Quest "${actualMission?.title}" has been deleted.`);
-    questData.setMission(questData.data.filter((quest)=> quest.id !== actualMission?.id));
-    navigate("/quests");
+
+    deleteQuest()
+
+
   }
 
   function editQuest() {
-    if(actualMission?.status === "completed") {
+    if (actualMission?.status === "completed") {
       alert("You cannot edit a completed quest.");
       return;
     }
 
     setOpen(true);
   }
-
-  useEffect(()=>{
-    if (userData.data.xp >= userData.data.nextLevelXP) {
-      userData.setUser({
-        ...userData.data,
-        level: userData.data.level + 1,
-        nextLevelXP: userData.data.nextLevelXP + 100
-      });
-      alert(`You level up to: ${userData.data.level + 1}!`);
-    }
-  },[userData])
 
   return (
     <div className="min-h-screen bg-[#090b18] text-slate-100">
@@ -76,8 +124,13 @@ export default function QuestDetail() {
         <Navbar />
 
         <main className="min-w-0 flex-1">
-
-          {open && <QuestModal setOpen={setOpen} isEditing={true} editQuest={actualMission} />}
+          {open && (
+            <QuestModal
+              setOpen={setOpen}
+              isEditing={true}
+              editQuest={actualMission}
+            />
+          )}
           {/* MAIN CONTENT */}
           <div className="mx-auto max-w-6xl space-y-7 p-5 md:p-8">
             {/* BREADCRUMB / BACK NAVIGATION */}
@@ -116,7 +169,7 @@ export default function QuestDetail() {
                 <div className="flex flex-col gap-6 md:flex-row md:items-center">
                   <div className="min-w-0 flex-1">
                     <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-amber-300">
-                      {actualMission?.id}
+                      quest-{actualMission?.id}
                     </p>
 
                     <h1 className="text-3xl font-black leading-tight tracking-tight md:text-5xl">
@@ -220,7 +273,7 @@ export default function QuestDetail() {
                       </p>
 
                       <p className="mt-3 text-3xl font-black text-amber-300">
-                        +{actualMission?.rewards.xp || 0} XP
+                        +{QUEST_REWARDS[actualMission.difficulty].xp || 0} XP
                       </p>
 
                       <p className="mt-2 text-xs text-slate-500">
@@ -233,7 +286,7 @@ export default function QuestDetail() {
                       <p className="text-xs text-slate-400">Gold Coins</p>
 
                       <p className="mt-3 text-3xl font-black text-violet-300">
-                        +{actualMission?.rewards.coins || 0}
+                        +{QUEST_REWARDS[actualMission.difficulty].coins || 0}
                       </p>
 
                       <p className="mt-2 text-xs text-slate-500">
@@ -261,7 +314,9 @@ export default function QuestDetail() {
                       </p>
 
                       <p className="mt-1 text-xs text-slate-500">
-                        {actualMission?.status === "pending" ? "This quest has not been completed yet." : "This quest has been completed."}
+                        {actualMission?.status === "pending"
+                          ? "This quest has not been completed yet."
+                          : "This quest has been completed."}
                       </p>
                     </div>
                   </div>
@@ -270,8 +325,8 @@ export default function QuestDetail() {
                     <p className="text-xs text-slate-500">Available rewards</p>
 
                     <p className="mt-2 text-sm font-semibold text-slate-200">
-                      {actualMission?.rewards.xp} XP and{" "}
-                      {actualMission?.rewards.coins} Gold Coins
+                      {QUEST_REWARDS[actualMission.difficulty].xp} XP and{" "}
+                      {QUEST_REWARDS[actualMission.difficulty].coins} Gold Coins
                     </p>
                   </div>
 
@@ -281,7 +336,9 @@ export default function QuestDetail() {
                     type="button"
                     className="mt-5 w-full rounded-xl bg-linear-to-r from-emerald-500 to-green-600 px-4 py-3 font-bold text-white shadow-lg shadow-emerald-950/30 transition hover:brightness-110"
                   >
-                    {actualMission?.status === "pending" ? "✓ Mark as Completed" : "✓ Quest Completed"}
+                    {actualMission?.status === "pending"
+                      ? "✓ Mark as Completed"
+                      : "✓ Quest Completed"}
                   </button>
                 </article>
 

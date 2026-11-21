@@ -9,9 +9,16 @@ import { ContextData } from "../context/Context";
 import type {MissionContextType} from "../interfaces/missions"
 import {QUEST_REWARDS} from "../constants/questRewards"
 import type {Mission} from "../interfaces/missions"
+import {supabase} from "../bd/supabase"
+import {STORAGE_KEY} from "../constants/storageKey"
 
+interface QuestModalProps {
+  setOpen : Function,
+  isEditing? : boolean,
+  editQuest? : Mission
+}
 
-export default function QuestModal({setOpen,isEditing=false,editQuest}:{setOpen: Function, isEditing?: boolean, editQuest?: Mission}) {
+export default function QuestModal({setOpen,isEditing=false,editQuest}:QuestModalProps) {
     const context: Context = useContext<Context>(ContextData);
     const questsData : MissionContextType = context.mission;
     const {
@@ -24,39 +31,56 @@ export default function QuestModal({setOpen,isEditing=false,editQuest}:{setOpen:
       resolver: zodResolver(QuestSchema),
     });
 
+    async function updateQuest(questData:QuestFormFields){
+      try{
+        const {data,error} = await supabase.from("quests").update({
+          ...questData,
+          deadline: new Date(questData.deadline)
+        }).eq("id",editQuest?.id).select("id,title,description,category,difficulty,status,deadline").single()
+
+        if(!error){
+          questsData.setMission(questsData.data.map((quest)=>{
+          if(quest.id === data.id)
+          {
+            return data;
+          }
+          return quest;
+        }))
+        }else{
+          console.error("Error trying to edit the quest: ",error.message)
+        }
+      }catch(error){
+        console.error("Unexpected error trying to edit the Quest: ", error)
+      }
+    }
+    
+    async function addQuest(questData:QuestFormFields){
+      try{
+        const {data,error} = await supabase.from("quests").insert({
+          ...questData,
+          user_id: localStorage.getItem(STORAGE_KEY),
+          deadline: new Date(questData.deadline)
+        }).select("id,title,description,category,difficulty,status,deadline").single()
+
+        if(!error){
+           questsData.setMission([...questsData.data, data]);
+        }else{
+          console.error("Error trying to add the quest: ",error.message)
+        }
+      }catch(error){
+        console.error("Unexpected error trying to add the Quest: ", error)
+      }
+    }
+
 
     const onSubmit:  SubmitHandler<QuestFormFields> = (data) => {
       if(isEditing)
       {
-        questsData.setMission(questsData.data.map((quest)=>{
-          if(quest.id === editQuest?.id)
-          {
-            return { 
-              ...quest, 
-              ...data,
-              status : "pending",
-              deadline: data.deadline === "" ? null : data.deadline,
-              rewards: {
-                xp: QUEST_REWARDS[data.difficulty].xp,
-                coins: QUEST_REWARDS[data.difficulty].coins,
-              },
-            };
-          }
-          return quest;
-        }))
+        updateQuest(data)
       }
       else
       {
-        questsData.setMission([...questsData.data, {
-          ...data,
-          id: `quest-${questsData.data.length + 1}`,
-          status: "pending",
-          deadline: data.deadline === "" ? null : data.deadline,
-        rewards: {
-          xp: QUEST_REWARDS[data.difficulty].xp,
-          coins: QUEST_REWARDS[data.difficulty].coins,
-        },
-      }]);
+       addQuest(data)
     }
     reset();
     setOpen(false);

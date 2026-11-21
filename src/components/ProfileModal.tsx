@@ -1,56 +1,73 @@
 import { useEffect, useState, useContext } from "react";
-import type {Context} from "../interfaces/context";
+import type { Context } from "../interfaces/context";
 import { ContextData } from "../context/Context";
-import { useForm } from "react-hook-form"
-import type { SubmitHandler} from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { ProfileSchema } from "../schemas/profileForm"
-import type { ProfileFormFields } from "../schemas/profileForm"
+import { useForm } from "react-hook-form";
+import type { SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ProfileSchema } from "../schemas/profileForm";
+import type { ProfileFormFields } from "../schemas/profileForm";
+import { supabase } from "../bd/supabase";
 
-export function ProfileModal({setOpen}: {setOpen: Function}) {
-    const context = useContext<Context>(ContextData)
-    const user = context.user
+interface ProfileModalProps {
+    setOpen : Function
+}
 
-    const {
-          register,
-          handleSubmit,
-          reset,
-          watch,
-          setValue,
-          formState: { errors },
-        } = useForm<ProfileFormFields>({
-          resolver: zodResolver(ProfileSchema),
-          defaultValues: {
-            avatar: user.data.avatar
-          }
-        });
+export function ProfileModal({ setOpen }: ProfileModalProps) {
+  const context = useContext<Context>(ContextData);
+  const user = context.user;
 
-    const onSubmit:  SubmitHandler<ProfileFormFields> = (data) => {
-        user.setUser({
-            ...user.data,
-            username: data.username,
-            avatar: data.avatar || user.data.avatar
-        })
-        alert("Profile updated successfully!");
-        reset();
-        setOpen(false);
-    }
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm<ProfileFormFields>({
+    resolver: zodResolver(ProfileSchema),
+    defaultValues: {
+      avatar: user.data.avatar,
+    },
+  });
 
-    const onError = (errors: any) => {
-      console.log("Errores de validación:", errors);
+  const onSubmit: SubmitHandler<ProfileFormFields> = (formData) => {
+    const updateProfile = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("profiles")
+          .update({
+            username: formData.username,
+            avatar: formData.avatar,
+          })
+          .eq("id", user.data.id)
+          .select()
+          .single();
+
+        if (!error) {
+          user.setUser(data);
+          alert("Profile updated successfully!");
+          reset();
+          setOpen(false);
+        }
+      } catch (error) {}
     };
 
-    const selectedAvatar = watch("avatar");
+    updateProfile();
+  };
+
+  const onError = (errors: any) => {
+    console.log("Errores de validación:", errors);
+  };
+
+  const selectedAvatar = watch("avatar");
 
   return (
     // MODAL OVERLAY
     // Covers the screen and darkens the background.
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-sm">
-
       {/* MODAL CONTAINER */}
       {/* Limits the modal size and allows scrolling on smaller screens. */}
       <section className="relative max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-2xl border border-white/10 bg-slate-900 p-6 shadow-2xl shadow-black/50 md:p-8">
-
         {/* MODAL HEADER */}
         <div className="mb-8 flex items-start justify-between gap-4">
           <div>
@@ -77,7 +94,6 @@ export function ProfileModal({setOpen}: {setOpen: Function}) {
         {/* PROFILE FORM */}
         {/* You will connect React Hook Form and Zod later. */}
         <form className="space-y-7" onSubmit={handleSubmit(onSubmit, onError)}>
-
           {/* PLAYER NAME */}
           <div>
             <label
@@ -88,7 +104,7 @@ export function ProfileModal({setOpen}: {setOpen: Function}) {
             </label>
 
             <input
-                {...register("username")}
+              {...register("username")}
               id="player-name"
               name="username"
               type="text"
@@ -116,7 +132,6 @@ export function ProfileModal({setOpen}: {setOpen: Function}) {
             <p className="mb-3 text-sm font-semibold text-slate-200">
               Choose Your Avatar
             </p>
-
 
             {/* Visual avatar options: you will implement the selection. */}
             <div className="flex flex-wrap gap-3">
@@ -163,6 +178,24 @@ export function ProfileModal({setOpen}: {setOpen: Function}) {
                 className={`${selectedAvatar === "🐉" ? "border-violet-400 bg-violet-500/20" : "border-white/10 bg-slate-950/60"} flex h-14 w-14 items-center justify-center rounded-xl border-2 text-3xl transition hover:border-violet-400/50`}
               >
                 🐉
+              </button>
+
+              <button
+                onClick={() => setValue("avatar", "⚔️")}
+                type="button"
+                aria-label="Sword avatar"
+                className={`${selectedAvatar === "⚔️" ? "border-violet-400 bg-violet-500/20" : "border-white/10 bg-slate-950/60"} flex h-14 w-14 items-center justify-center rounded-xl border-2 text-3xl transition hover:border-violet-400/50`}
+              >
+                ⚔️
+              </button>
+
+              <button
+                onClick={() => setValue("avatar", "🧙‍♀️")}
+                type="button"
+                aria-label="Wizard avatar"
+                className={`${selectedAvatar === "🧙‍♀️" ? "border-violet-400 bg-violet-500/20" : "border-white/10 bg-slate-950/60"} flex h-14 w-14 items-center justify-center rounded-xl border-2 text-3xl transition hover:border-violet-400/50`}
+              >
+                🧙‍♀️
               </button>
             </div>
 

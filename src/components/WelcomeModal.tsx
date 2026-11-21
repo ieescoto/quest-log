@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod";
 import {STORAGE_KEY} from "../constants/storageKey"
 import {supabase} from "../bd/supabase"
-import type {Mission} from "../interfaces/missions"
 import {missions} from "../assets/missions.json"
 
 export const WelcomeSchema = z.object({

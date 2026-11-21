@@ -5,6 +5,7 @@ import { z } from "zod";
 import {STORAGE_KEY} from "../constants/storageKey"
 import {supabase} from "../bd/supabase"
 import type {Mission} from "../interfaces/missions"
+import {missions} from "../assets/missions.json"
 
 export const WelcomeSchema = z.object({
   username: z.string().min(1, "Username is required").max(10, "Username must be at most 10 characters"),
@@ -50,11 +51,8 @@ export function WelcomeModal({setLoading, setIsNewUser,formatUser,setQuest}:Welc
     async function setDefaultQuestData(){
         const userID = localStorage.getItem(STORAGE_KEY)
           try {
-            const response = await fetch("./src/assets/missions.json");
-            const missions = await response.json();
-    
             const {data,error} = await supabase.from("quests").insert(
-              missions.missions.map((quest:Mission)=>{
+              missions.map((quest)=>{
                 return {
                   user_id: userID,
                   title: quest.title,

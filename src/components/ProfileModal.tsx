@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ProfileSchema } from "../schemas/profileForm";
 import type { ProfileFormFields } from "../schemas/profileForm";
 import { supabase } from "../bd/supabase";
+import {toast} from "sonner"
 
 interface ProfileModalProps {
     setOpen : Function
@@ -22,7 +23,7 @@ export function ProfileModal({ setOpen }: ProfileModalProps) {
     reset,
     watch,
     setValue,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<ProfileFormFields>({
     resolver: zodResolver(ProfileSchema),
     defaultValues: {
@@ -30,8 +31,7 @@ export function ProfileModal({ setOpen }: ProfileModalProps) {
     },
   });
 
-  const onSubmit: SubmitHandler<ProfileFormFields> = (formData) => {
-    const updateProfile = async () => {
+  const onSubmit: SubmitHandler<ProfileFormFields> = async (formData) => {
       try {
         const { data, error } = await supabase
           .from("profiles")
@@ -45,14 +45,16 @@ export function ProfileModal({ setOpen }: ProfileModalProps) {
 
         if (!error) {
           user.setUser(data);
-          alert("Profile updated successfully!");
+          toast.success("Profile updated successfully!");
           reset();
           setOpen(false);
+        }else{
+            toast.error("Error updating profile");
         }
-      } catch (error) {}
-    };
-
-    updateProfile();
+      } catch (error) {
+        console.error("Unexpected error:", error);
+      }
+      
   };
 
   const onError = (errors: any) => {
@@ -216,9 +218,10 @@ export function ProfileModal({ setOpen }: ProfileModalProps) {
 
             <button
               type="submit"
+              disabled={isSubmitting}
               className="rounded-xl bg-linear-to-r from-violet-500 to-purple-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-violet-950/30 transition hover:brightness-110"
             >
-              Save Changes
+              {isSubmitting ? "Saving..." :"Save Changes"}
             </button>
           </div>
         </form>

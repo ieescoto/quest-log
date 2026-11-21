@@ -29,7 +29,7 @@ export default function Home() {
           <header className="sticky top-0 z-10 flex flex-wrap items-center justify-between gap-4 border-b border-white/10 bg-[#0b0d1b]/95 px-6 py-4 backdrop-blur-lg md:px-8">
 
             {/* Buscador visual: después puedes conectar el filtrado de misiones */}
-            <div className="flex min-w-0 flex-1 items-center gap-3 rounded-full border border-violet-300/30 bg-white/3 px-4 py-3 md:max-w-xl">
+            {/* <div className="flex min-w-0 flex-1 items-center gap-3 rounded-full border border-violet-300/30 bg-white/3 px-4 py-3 md:max-w-xl">
               <span className="text-lg text-violet-300">⌕</span>
 
               <input
@@ -37,17 +37,17 @@ export default function Home() {
                 placeholder="Search quests..."
                 className="w-full bg-transparent text-sm text-white outline-none placeholder:text-slate-500"
               />
-            </div>
+            </div> */}
 
             {/* PERFIL DEL USUARIO: contenido estático de ejemplo */}
             <div className="flex items-center gap-3">
-              <button
+              {/* <button
                 type="button"
                 aria-label="Notificaciones"
                 className="rounded-full p-2 text-xl text-slate-300 transition hover:bg-white/10"
               >
                 ♧
-              </button>
+              </button> */}
 
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full border border-violet-300/60 bg-violet-600/30 text-xl">
@@ -61,7 +61,7 @@ export default function Home() {
                   <p className="text-xs text-slate-400">Level {userData.data?.level}</p>
                 </div>
 
-                <span className="text-slate-500">⌄</span>
+                {/* <span className="text-slate-500">⌄</span> */}
               </div>
             </div>
           </header>

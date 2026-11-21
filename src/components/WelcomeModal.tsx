@@ -81,19 +81,16 @@ export function WelcomeModal({setLoading, setIsNewUser,formatUser,setQuest}:Welc
   const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isSubmitting },
       } = useForm<WelcomeForm>({
         resolver: zodResolver(WelcomeSchema),
       });
 
-      const onSubmit:  SubmitHandler<WelcomeForm> = (data) => {
-        const gettingStarted = async () => {
-            await createUser(data.username)
-            setDefaultQuestData()
-        }
-        gettingStarted()
+      const onSubmit:  SubmitHandler<WelcomeForm> = async (data) => {
+        await createUser(data.username)
+        await setDefaultQuestData()
         setIsNewUser(false)
-        }
+      }
       
 
   return (
@@ -166,10 +163,11 @@ export function WelcomeModal({setLoading, setIsNewUser,formatUser,setQuest}:Welc
           {/* Connect this button to profile creation and UUID generation. */}
           <button
             type="submit"
+            disabled={isSubmitting}
             className="w-full rounded-xl bg-linear-to-r from-violet-500 to-purple-600 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-violet-950/30 transition hover:brightness-110"
           >
-            Begin Your Adventure
-            <span className="ml-2">→</span>
+            {isSubmitting ? "Creating User...":"Begin Your Adventure →"}
+            
           </button>
 
         </form>

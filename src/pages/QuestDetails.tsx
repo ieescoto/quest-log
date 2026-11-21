@@ -7,6 +7,7 @@ import Error from "./Error";
 import QuestModal from "../components/QuestModal";
 import { supabase } from "../bd/supabase";
 import {QUEST_REWARDS} from "../constants/questRewards"
+import {toast} from "sonner"
 
 export default function QuestDetail() {
   const navigate = useNavigate();
@@ -17,6 +18,9 @@ export default function QuestDetail() {
   const { id } = useParams();
   const actualMission = questData.data.find((quest) => String(quest.id) === id);
   const [open, setOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false)
+
+  if(deleting) return null
 
   if (!actualMission) return <Error />;
 
@@ -37,7 +41,7 @@ export default function QuestDetail() {
   
             const newLevel = Math.floor(data.xp/100) + 1
             if(newLevel > previousLevel){
-              alert(`You level up to: ${newLevel}!`);
+              toast.success(`You level up to: ${newLevel}!`)
             }
           }else{
             console.error("Error when trying to complete a quest: ", error.message)
@@ -61,6 +65,7 @@ export default function QuestDetail() {
             return quest;
           }),
         );
+        toast.success("Quest completed!")
       }else{
         console.error("Error trying to update quest status: ",error.message)
       }
@@ -72,7 +77,7 @@ export default function QuestDetail() {
 
   function completeQuest() {
     if (actualMission?.status === "completed") {
-      alert("This quest has already been completed.");
+      toast.error("This quest has already been completed.")
       return;
     }
 
@@ -83,14 +88,18 @@ export default function QuestDetail() {
   function deleteQuest() {
     const deleteQuest = async () => {
       try{
+        setDeleting(true)
         const {data,error} = await supabase.from("quests").delete().eq("id",actualMission?.id).select("id").single()
         
         if(!error){
-          alert(`Quest "${actualMission?.title}" has been deleted.`);
+          toast.success(`Quest "${actualMission?.title}" has been deleted.`);
           questData.setMission(
             questData.data.filter((quest) => quest.id !== data.id),
           );
           navigate("/quests");
+        }else{
+          setDeleting(false);
+          toast.error("Could not delete quest");
         }
   
       }catch(error){
@@ -99,23 +108,23 @@ export default function QuestDetail() {
     }
 
     if (actualMission?.status === "completed") {
-      alert("You cannot delete a completed quest.");
+      toast.error("You cannot delete a completed quest.");
       return;
     }
 
     deleteQuest()
-
-
   }
 
   function editQuest() {
     if (actualMission?.status === "completed") {
-      alert("You cannot edit a completed quest.");
+      toast.error("You cannot edit a completed quest.")
       return;
     }
 
     setOpen(true);
   }
+
+  
 
   return (
     <div className="min-h-screen bg-[#090b18] text-slate-100">

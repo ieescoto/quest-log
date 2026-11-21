@@ -254,7 +254,7 @@ export default function Quests() {
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 2xl:grid-cols-3">
 
                 {missions.map(({id})=>{
-                  return <QuestCards key={id} currentMissionId={id}></QuestCards>
+                  return <QuestCards key={id} currentQuestID={id}></QuestCards>
                 })}
 
                 {missions.length === 0 && (

@@ -39,7 +39,7 @@ export default function Navbar() {
         </NavLink>
 
         {/* Colección de personajes */}
-        <NavLink
+        {/* <NavLink
           to="/characters"
           className={({isActive})=>
             isActive ? "flex items-center gap-4 rounded-xl border border-violet-400/30 bg-violet-600/30 px-4 py-3 font-semibold text-white shadow-lg shadow-violet-950/20 transition hover:bg-violet-600/40" : "flex items-center gap-4 rounded-xl px-4 py-3 transition hover:bg-white/5 hover:text-white"
@@ -48,7 +48,7 @@ export default function Navbar() {
           <span className="text-xl">♟</span>
           <span>Characters</span>
         </NavLink>
-
+ */}
         {/* Estadísticas y progreso: puedes conectar esta opción a tu página de progreso */}
         {/* <NavLink
           to="/progress"

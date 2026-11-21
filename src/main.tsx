@@ -9,6 +9,7 @@ import Characters from './pages/Characters'
 import Profile from './pages/Profile'
 import QuestDetails from './pages/QuestDetails'
 import Error from './pages/Error'
+import {Toaster} from "sonner"
 
 const router = createBrowserRouter([
   {
@@ -17,10 +18,10 @@ const router = createBrowserRouter([
   },{
     path: "/quests",
     element: <Quests />
-  },{
+  }/* ,{
     path: "/characters",
     element: <Characters />
-  },{
+  } */,{
     path: "/profile",
     element : <Profile />
   },{
@@ -35,6 +36,7 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AppContext >
+      <Toaster position="bottom-right" richColors theme="dark" />
       <RouterProvider router={router} />
     </AppContext>
   </StrictMode>,

@@ -11,6 +11,8 @@ import {QUEST_REWARDS} from "../constants/questRewards"
 import type {Mission} from "../interfaces/missions"
 import {supabase} from "../bd/supabase"
 import {STORAGE_KEY} from "../constants/storageKey"
+import {toast} from "sonner"
+import {getTodayLocal} from "../functions/getDate"
 
 interface QuestModalProps {
   setOpen : Function,
@@ -26,7 +28,7 @@ export default function QuestModal({setOpen,isEditing=false,editQuest}:QuestModa
       handleSubmit,
       reset,
       watch,
-      formState: { errors },
+      formState: { errors,isSubmitting },
     } = useForm<QuestFormFields>({
       resolver: zodResolver(QuestSchema),
     });
@@ -46,6 +48,7 @@ export default function QuestModal({setOpen,isEditing=false,editQuest}:QuestModa
           }
           return quest;
         }))
+        toast.success("Quest edited succesfully!")
         }else{
           console.error("Error trying to edit the quest: ",error.message)
         }
@@ -64,6 +67,7 @@ export default function QuestModal({setOpen,isEditing=false,editQuest}:QuestModa
 
         if(!error){
            questsData.setMission([...questsData.data, data]);
+           toast.success("Quest added succesfully!")
         }else{
           console.error("Error trying to add the quest: ",error.message)
         }
@@ -73,14 +77,14 @@ export default function QuestModal({setOpen,isEditing=false,editQuest}:QuestModa
     }
 
 
-    const onSubmit:  SubmitHandler<QuestFormFields> = (data) => {
+    const onSubmit:  SubmitHandler<QuestFormFields> = async (data) => {
       if(isEditing)
       {
-        updateQuest(data)
+       await updateQuest(data)
       }
       else
       {
-       addQuest(data)
+       await addQuest(data)
     }
     reset();
     setOpen(false);
@@ -137,7 +141,7 @@ export default function QuestModal({setOpen,isEditing=false,editQuest}:QuestModa
         </header>
 
         {/* FORMULARIO VISUAL: falta conectar validación y envío */}
-        <form onSubmit={handleSubmit(onSubmit,onError)} className="space-y-6 p-6">
+        <form onSubmit={handleSubmit(onSubmit,onError)} className="space-y-6 p-6" noValidate>
 
           {/* TÍTULO DE LA MISIÓN */}
           <div>
@@ -273,13 +277,18 @@ export default function QuestModal({setOpen,isEditing=false,editQuest}:QuestModa
               id="quest-deadline"
               defaultValue={editQuest?.deadline || ""}
               name="deadline"
+              min={getTodayLocal()}
               type="date"
-              className="w-full rounded-xl border border-white/10 bg-slate-950 px-4 py-3 text-sm text-slate-300 outline-none transition focus:border-violet-400"
+              className="w-full rounded-xl border border-white/10 bg-slate-950 px-4 py-3 text-sm text-slate-300 outline-none transition focus:border-violet-400 scheme-dark"
             />
 
-            <p className="mt-2 text-xs text-slate-500">
+            {!errors.deadline &&(<p className="mt-2 text-xs text-slate-500">
               Leave it blank if the quest has no deadline.
-            </p>
+            </p>)}
+
+            {errors.deadline &&(<p className="mt-2 text-xs text-rose-400">
+              {errors.deadline.message}
+            </p>)}
           </div>
 
           {/* PANEL DE RECOMPENSAS: ejemplo visual de dificultad fácil.
@@ -333,9 +342,10 @@ export default function QuestModal({setOpen,isEditing=false,editQuest}:QuestModa
             {/* CREAR: todavía no guarda ni envía datos */}
             <button
               type="submit"
+              disabled={isSubmitting}
               className="rounded-xl bg-linear-to-br from-violet-500 to-purple-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-violet-950/30 transition hover:brightness-110"
             >
-              ✦ Create Quest
+              {isSubmitting ? "Creating..." :"✦ Create Quest"}
             </button>
           </footer>
 

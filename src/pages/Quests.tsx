@@ -47,7 +47,7 @@ export default function Quests() {
   return (
 
     /* CONTENEDOR GENERAL: menú lateral y contenido */
-    <div className="min-h-screen bg-[#090b18] text-slate-100">
+    <div className="min-h-screen bg-[#090b18] pb-[calc(68px+env(safe-area-inset-bottom))] text-slate-100 lg:pb-0">
       <div className="flex min-h-screen">
 
         {/* MENÚ LATERAL COMPARTIDO CON EL RESTO DE LA APLICACIÓN */}
@@ -78,7 +78,7 @@ export default function Quests() {
               {/* BOTÓN VISUAL: tú implementarás la apertura del formulario */}
               <button
                 type="button"
-                className="inline-flex items-center gap-2 rounded-xl bg-linear-to-r from-violet-500 to-purple-600 px-5 py-3 font-bold text-white shadow-lg shadow-violet-950/30 transition hover:brightness-110"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-violet-500 to-purple-600 px-5 py-3 font-bold text-white shadow-lg shadow-violet-950/30 transition hover:brightness-110 sm:w-auto"
                 onClick={()=> setOpen(true)}
               >
                 <span className="text-xl">+</span>

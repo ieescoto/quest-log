@@ -14,7 +14,7 @@ export default function Profile() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#090b18] text-slate-100">
+    <div className="min-h-screen bg-[#090b18] pb-[calc(68px+env(safe-area-inset-bottom))] text-slate-100 lg:pb-0">
       <div className="flex min-h-screen">
         {/* SIDEBAR */}
         <Navbar />
@@ -93,7 +93,7 @@ export default function Profile() {
                 <button
                   onClick={() => setOpen(true)}
                   type="button"
-                  className="shrink-0 rounded-xl border border-violet-300/30 bg-violet-500/15 px-5 py-3 text-sm font-semibold text-violet-200 transition hover:bg-violet-500/25"
+                  className="w-full shrink-0 rounded-xl border border-violet-300/30 bg-violet-500/15 px-5 py-3 text-sm font-semibold text-violet-200 transition hover:bg-violet-500/25 sm:w-auto"
                 >
                   ✎ Edit Profile
                 </button>

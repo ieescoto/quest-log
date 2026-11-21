@@ -8,7 +8,7 @@ export default function Characters(){
     
         return (
                 /* CONTENEDOR GENERAL: menú lateral + contenido de la página */
-                <div className="min-h-screen bg-[#090b18] text-slate-100">
+                <div className="min-h-screen bg-[#090b18] pb-[calc(68px+env(safe-area-inset-bottom))] text-slate-100 lg:pb-0">
             
                   <div className="flex min-h-screen">
             

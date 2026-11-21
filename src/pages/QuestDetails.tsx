@@ -127,7 +127,7 @@ export default function QuestDetail() {
   
 
   return (
-    <div className="min-h-screen bg-[#090b18] text-slate-100">
+    <div className="min-h-screen bg-[#090b18] pb-[calc(68px+env(safe-area-inset-bottom))] text-slate-100 lg:pb-0">
       <div className="flex min-h-screen">
         {/* SIDEBAR */}
         <Navbar />
@@ -274,7 +274,7 @@ export default function QuestDetail() {
                     </div>
                   </div>
 
-                  <div className="mt-6 grid grid-cols-2 gap-4">
+                  <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
                     {/* EXPERIENCE REWARD */}
                     <div className="rounded-xl border border-amber-300/20 bg-slate-950/50 p-5">
                       <p className="text-xs text-slate-400">

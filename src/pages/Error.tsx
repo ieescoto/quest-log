@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar";
 
 export default function Error() {
   return (
-    <div className="flex min-h-screen bg-slate-950 text-white">
+    <div className="flex min-h-screen bg-slate-950 pb-[calc(68px+env(safe-area-inset-bottom))] text-white lg:pb-0">
 
       {/* SIDEBAR */}
       <Navbar />

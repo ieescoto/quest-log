@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import {useContext } from "react";
 import Navbar from "../components/Navbar";
 import {ProgressBar} from "../components/ProgressBar";
 import type {UserContextType} from "../interfaces/user";

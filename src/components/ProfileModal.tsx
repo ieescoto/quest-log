@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useContext } from "react";
 import type { Context } from "../interfaces/context";
 import { ContextData } from "../context/Context";
 import { useForm } from "react-hook-form";
@@ -54,7 +54,7 @@ export function ProfileModal({ setOpen }: ProfileModalProps) {
       } catch (error) {
         console.error("Unexpected error:", error);
       }
-      
+
   };
 
   const onError = (errors: any) => {

@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useState, useContext } from "react";
 import type { Context } from "../interfaces/context";
 import { ContextData } from "../context/Context";
 import Navbar from "../components/Navbar";

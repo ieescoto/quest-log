@@ -1,10 +1,8 @@
-import { useEffect, useState, useContext, type ChangeEvent } from "react";
-import type {UserContextType} from "../interfaces/user";
+import {useState, useContext, type ChangeEvent } from "react";
 import type {Context} from "../interfaces/context";
 import { ContextData} from "../context/Context";
 import Navbar from "../components/Navbar";
 import QuestModal from '../components/QuestModal'
-import type {Mission} from '../interfaces/missions'
 import {QuestCards} from "../components/QuestCards"
 
 export default function Quests() {
